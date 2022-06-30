@@ -29,12 +29,15 @@ class Collect_Paths():
         for file in self.files_npz:
             file_str = str(file)
             self.filename_npz.append(file_str.split('/')[-1].split('_stageii.npz')[0])
+        print("len smpl files",len(self.filename_npz))
         for file in self.files_amc:
             file_str = str(file)
             self.filename_amc.append(file_str.split('/')[-1].split('.amc')[0])
+        print("len amc files",len(self.filename_amc))
         for file in self.files_c3d:
             file_str = str(file)
             self.filename_c3d.append(file_str.split('/')[-1].split('.c3d')[0])
+        print("len c3d files",len(self.filename_c3d))
 
         plus_c3d = natsort.natsorted(list(set(self.filename_c3d)-set(self.filename_amc)))
         plus_amc = natsort.natsorted(list(set(self.filename_amc)-set(self.filename_c3d)))
@@ -47,7 +50,6 @@ class Collect_Paths():
         for plus2 in plus_amc:
             self.filename_amc.remove(plus2)
             self.files_amc.remove(list(self.BASE_DIR_SKEL.glob('subjects/*/' + plus2 + '.amc'))[0])
-
 
         plus_c3d = natsort.natsorted(list(set(self.filename_c3d)-set(self.filename_npz)))
         plus_npz = natsort.natsorted(list(set(self.filename_npz)-set(self.filename_c3d)))
@@ -63,10 +65,17 @@ class Collect_Paths():
             self.filename_npz.remove(plus2)
             self.files_npz.remove(list(BASE_DIR_SMPL.glob('*/'+ plus2 + '_stageii.npz'))[0])
 
+        print("len c3d after files",len(self.files_c3d))
+        print("len amc after files",len(self.files_amc))
+        print("len smpl after files",len(self.files_npz))
+
         self.subject = []
         for file in self.filename_c3d:
             if file.split('_')[0] not in self.subject:
                 self.subject.append(file.split('_')[0])
+        
+        self.subject = natsort.natsorted(self.subject)
+        print("len subject",len(self.subject))
 
 
         self.train_skel = []
@@ -91,7 +100,7 @@ class Collect_Paths():
         train_len = int(len(self.subject)*0.6)
         train_index, test_index = torch.utils.data.random_split(self.subject, [train_len, len(self.subject) - train_len])
         train_subj = natsort.natsorted(list(self.subject[i] for i in train_index.indices))
-        test_set = list(self.subject[i] for i in test_index.indices)
+        test_set = natsort.natsorted(list(self.subject[i] for i in test_index.indices))
         val_len = int(len(test_set)*0.5)
         val_index, test_index = torch.utils.data.random_split(test_set, [val_len, len(test_set) - val_len])
         val_subj = natsort.natsorted(list(test_set[i] for i in val_index.indices))
@@ -110,17 +119,23 @@ class Collect_Paths():
         for train, validate, test in zip(train_subj,val_subj,test_subj):
             for index in np.where(datasets_motion['Subject']==train)[0]:
                 self.train_c3d.append(datasets_motion['path'].values[index])
+            for index in np.where(datasets_motion['Subject']==validate)[0]:
                 self.validate_c3d.append(datasets_motion['path'].values[index])
+            for index in np.where(datasets_motion['Subject']==test)[0]:   
                 self.test_c3d.append(datasets_motion['path'].values[index])
 
             for index in np.where(datasets_amc['Subject']==train)[0]:
                 self.train_amc.append(datasets_amc['path'].values[index])
+            for index in np.where(datasets_amc['Subject']==validate)[0]:
                 self.validate_amc.append(datasets_amc['path'].values[index])
+            for index in np.where(datasets_amc['Subject']==test)[0]:
                 self.test_amc.append(datasets_amc['path'].values[index])
 
             for index in np.where(datasets_npz['Subject']==train)[0]:
                 self.train_npz.append(datasets_npz['path'].values[index])
+            for index in np.where(datasets_npz['Subject']==validate)[0]:
                 self.validate_npz.append(datasets_npz['path'].values[index])
+            for index in np.where(datasets_npz['Subject']==test)[0]:
                 self.test_npz.append(datasets_npz['path'].values[index])
 
     def get_c3d_data(self):

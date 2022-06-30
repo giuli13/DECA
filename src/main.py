@@ -35,7 +35,7 @@ def main(argv):
     print("Capsules architecture: ", FLAGS.arch)
 
     if FLAGS.mode == "train":
-        dm = CapsulePoseDataModule(FLAGS)
+        dm = Marker2SkelDataModule(FLAGS)
         model = CapsulePose(FLAGS)
         if(FLAGS.resume_training):
             trainer = pl.Trainer(gpus=1, distributed_backend=None, resume_from_checkpoint=os.path.join(

@@ -2,8 +2,8 @@ from absl import flags
 
 # DIRECTORIES
 
-flags.DEFINE_string('dataset_dir', "D:/Datasets", 'Dataset directory.')
-flags.DEFINE_string('dataset', "panoptic_tv", 'Dataset name.')
+flags.DEFINE_string('dataset_dir', "/home/giuliamartinelli/Documents/Repositories/DECA/dataset", 'Dataset directory.')
+flags.DEFINE_string('dataset', "CMU", 'Dataset name.')
 
 # NETWORK PARAMETERS
 

@@ -190,7 +190,7 @@ def procrustes(X, Y, scaling=True, reflection='best'):
     V = Vt.T
     T = np.dot(V, U.T)
 
-    if reflection is not 'best':
+    if reflection != 'best':
 
         # does the current solution use a reflection?
         have_reflection = np.linalg.det(T) < 0
@@ -429,7 +429,7 @@ def save_3d_plot(itop, name, azim=None, elev=None, gt=None, display_labels=False
 
     ax.scatter3D(xdata, ydata, zdata, c=zdata)
 
-    if(gt is not None):
+    if(gt != None):
         pred = undiscretize(itop, 0, 1)[index]
         gt = undiscretize(gt, 0, 1)[index]
 
@@ -445,7 +445,7 @@ def save_3d_plot(itop, name, azim=None, elev=None, gt=None, display_labels=False
 
     for i, (x, y, z, label) in enumerate(zip(xdata,ydata,zdata, itop_labels)):
         error_color='black'
-        if(gt is not None and not errors[i]):
+        if(gt != None and not errors[i]):
             error_color='red'
         if(display_labels):
             ax.text(x, y, z, label, color=error_color)
